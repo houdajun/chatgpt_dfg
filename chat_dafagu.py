@@ -5,7 +5,7 @@ from llama_index.retrievers import VectorIndexRetriever
 from llama_index import get_response_synthesizer
 from llama_index.query_engine import RetrieverQueryEngine
 from llama_index.postprocessor import SimilarityPostprocessor
-from IPython.display import Markdown, display
+#from IPython.display import Markdown, display
 
 # ...
 
