@@ -8,7 +8,16 @@ from llama_index.postprocessor import SimilarityPostprocessor
 import sys
 # Start timing
 #start_time = time.time()
+# import os
 
+# script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# # Change the current working directory to the script directory
+# os.chdir(script_dir)
+
+# # Now print the current working directory
+# print(os.getcwd())
+# print(os.getenv('OPENAI_API_KEY'))
 @st.cache_data
 def load_index():
     print("Loading the index...")
@@ -36,7 +45,7 @@ start_time = time.time()
 # configure retriever
 retriever = VectorIndexRetriever(
     index=index,
-    similarity_top_k=6,
+    similarity_top_k=8,
 )
 
 # Print time taken to configure the retriever
@@ -46,7 +55,7 @@ print("Time taken to configure the retriever: %s seconds" % (time.time() - start
 start_time = time.time()
 
 # configure response synthesizer
-response_synthesizer = get_response_synthesizer()
+response_synthesizer = get_response_synthesizer(response_mode='tree_summarize')
 
 # Print time taken to configure the response synthesizer
 print("Time taken to configure the response synthesizer: %s seconds" % (time.time() - start_time))
@@ -58,7 +67,7 @@ start_time = time.time()
 query_engine = RetrieverQueryEngine(
     retriever=retriever,
     response_synthesizer=response_synthesizer,
-    node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.8)],
+    node_postprocessors=[SimilarityPostprocessor(similarity_cutoff=0.7)],
 )
 
 # Print time taken to assemble the query engine
@@ -67,7 +76,12 @@ print("Time taken to assemble the query engine: %s seconds" % (time.time() - sta
 # Initialize the conversation history
 conversation_history = []
 
-# ...
+# # ...
+# prompt = "你是圣严法师，请用中文回答以下问题:"
+# user_input = "如何修行"
+# response = query_engine.query(prompt.join(user_input))
+# print(f"The response: {response}")
+
 
 # Streamlit code
 st.title('大法鼓问答')
@@ -78,10 +92,10 @@ if user_input:
     # Add the user input to the conversation history
     conversation_history.append(user_input)
     print(user_input)
-
+    prompt = "你是圣严法师，请用中文回答以下问题:"
     # Generate the response using the conversation history
     #response = query_engine.query(' '.join(conversation_history))
-    response = query_engine.query(user_input)
+    response = query_engine.query(prompt.join(user_input))
 
     # Add the response to the conversation history
     conversation_history.append(response)
